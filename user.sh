@@ -54,30 +54,28 @@ fi
 mkdir -p /app &>> $LOGFILE
 VALIDATE $? "setup an app directory"
 
-curl -o /tmp/catalogue.zip https://roboshop-builds.s3.amazonaws.com/catalogue.zip
+
+curl -o /tmp/user.zip https://roboshop-builds.s3.amazonaws.com/user.zip
 VALIDATE $? "Download the application code to created app directory."
 
 cd /app
 #overwrite , if any data exists
-unzip -o /tmp/catalogue.zip
-VALIDATE $? "unzipping catalogue"
+unzip -o /tmp/user.zip
+VALIDATE $? "unzipping user"
 
 npm install 
 VALIDATE $? "download the dependencies"
 
-#cp catalogue.service /etc/systemd/system/catalogue.service
-
-#use absolute path, bcz catalogue.service exists there
-cp /home/centos/roboshop-shell/catalogue.service /etc/systemd/system/catalogue.service
-VALIDATE $? "copying Catalogue Service"
+cp /home/centos/roboshop-shell/user.service /etc/systemd/system/user.service
+VALIDATE $? "copying user Service"
 
 systemctl daemon-reload
 VALIDATE $? "Load the service."
 
-systemctl enable catalogue
+systemctl enable user
 VALIDATE $? "enable the service."
 
-systemctl start catalogue
+systemctl start user
 VALIDATE $? "Start the catalogue service."
 
 cp /home/centos/roboshop-shell/mongo.repo /etc/yum.repos.d/mongo.repo
@@ -86,5 +84,5 @@ VALIDATE $? "copying mongodb repo."
 dnf install mongodb-org-shell -y
 VALIDATE $? "install mongodb-client."
 
-mongo --host $MONGODB_HOST </app/schema/catalogue.js
-VALIDATE $? "Load Schema--Loading catalogue data into MongoDB"
+mongo --host $MONGODB_HOST </app/schema/user.js
+VALIDATE $? "Load Schema--Loading user data into MongoDB"
